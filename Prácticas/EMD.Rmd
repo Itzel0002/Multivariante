@@ -1,0 +1,98 @@
+---
+title: "EMD"
+author: "Itzel Teodocio Olivares"
+date: '2022-06-04'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#______ Escalado multidimensional Mátrico______
+
+# Cargamos la matriz de datos eurodist
+
+```{r}
+data.dist<-eurodist
+```
+
+# Transformamos los datos en matriz
+```{r}
+data.dist<-as.matrix(data.dist)
+```
+
+#-----------------------------------
+#  Extracción de las filas de la matriz
+#-----------------------------------
+
+# Numero de ciudades
+```{r}
+n<-nrow(data.dist)
+```
+
+
+#------------------------------------
+#  Escalado multidimensional clÃ¡sico
+#------------------------------------
+# 1.- cálculo de autovalores
+# Dentro del objeto mds.cities se encuentran
+# almacenado los valores propios (eigenvalues) en
+# mds.cities$eig
+
+```{r}
+mds.cities<-cmdscale(data.dist, eig = TRUE)
+```
+
+
+# 2.- Generacion del grafico
+```{r}
+plot(mds.cities$eig, pch=19, col="blue", 
+     xlab="Números", ylab="Valores Propios",
+     type="o")
+abline(a=0, b=0, col="red")
+```
+
+
+# Interpretacion: se identifican autovalores negativos
+# Se considera como solución el seleccionar
+# r=2 coordenadas principales.
+
+
+# 3.- Medidas de precision
+
+```{r}
+m<-sum(abs(mds.cities$eig[1:2]))/sum(abs(mds.cities$eig))
+```
+
+
+#4.- Obtencion de coordenadas principales fijando
+# k=2 y se realice con los dos primeros autovalores.
+```{r}
+mds.cities<-cmdscale(data.dist, eig=TRUE, k=2)
+
+x1<-mds.cities$points[,1]
+x2<-mds.cities$points[,2]
+```
+
+
+# 5.- Generacion del gráfico en dos dimensiones de los
+# datos con las coordenadas obtenidas
+```{r}
+plot(x1,x2,pch=19, col="blue", 
+     xlim = range(x1)+c(0,600))
+text(x1,x2, pos=4, labels = rownames(data.dist),
+     col="black")
+```
+
+
+# Se invierten los ejes del plot
+```{r}
+x2<--x2
+
+plot2<-plot(x1,x2,pch=19, col="purple", 
+     xlim = range(x1)+c(0,600))
+text(x1,x2, pos=4, labels = rownames(data.dist),
+     col="black")
+```
+
